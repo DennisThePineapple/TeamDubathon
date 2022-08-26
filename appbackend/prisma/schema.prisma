@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Route {
+  id                        String      @db.VarChar(255) @id
+  route_short_name          String      @db.VarChar(255)
+  route_desc                String      @db.VarChar(255)
+  route_long_name           String      @db.VarChar(255)
+  route_type                String      @db.VarChar(255)
+  route_url                 String      @db.VarChar(255)
+  createdAt DateTime    @default(now()) @db.Timestamp(6)
+  trips                     Trip[]
+}
+
+model Stop {
+    id                             String      @db.VarChar(255) @id
+    stop_code                  String      @db.VarChar(255)
+    stop_name                  String      @db.VarChar(255)
+    stop_desc               String      @db.VarChar(255)
+    stop_lat                String      @db.VarChar(255)
+    stop_lon                 String      @db.VarChar(255)
+    zone_id                 String      @db.VarChar(255)
+    stop_url                String      @db.VarChar(255)
+    location_type           String      @db.VarChar(255)
+    parent_station                String      @db.VarChar(255)
+    platform_code                 String      @db.VarChar(255)
+    stoptimes           StopTime[]
+}
+
+model Trip {
+    id                             String      @db.VarChar(255) @id
+    service_id                  String      @db.VarChar(255)
+    trip_headsign                  String      @db.VarChar(255)
+    direction_id               String      @db.VarChar(255)
+    route   Route@relation(fields: [route_id], references: [id])
+    route_id                String      @db.VarChar(255)
+    stop_times          StopTime[]
+}
+
+model StopTime {
+    id          Int  @id @default(autoincrement())
+        arrival_time                  String      @db.VarChar(255)
+        departure_time                  String      @db.VarChar(255)
+        direction_id               String      @db.VarChar(255)
+                stop_sequence                  String      @db.VarChar(255)
+                pickup_type                  String      @db.VarChar(255)
+                drop_off_type               String      @db.VarChar(255)
+
+        stop   Stop@relation(fields: [stop_id], references: [id])
+        stop_id                String      @db.VarChar(255)
+               trip   Trip@relation(fields: [trip_id], references: [id])
+               trip_id                String      @db.VarChar(255)
+}

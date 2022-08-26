@@ -1,0 +1,8 @@
+-- CreateTable
+CREATE TABLE "Bus" (
+    "id" SERIAL NOT NULL,
+    "route" VARCHAR(255) NOT NULL,
+    "createdAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Bus_pkey" PRIMARY KEY ("id")
+);
