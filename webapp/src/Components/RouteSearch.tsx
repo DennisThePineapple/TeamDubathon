@@ -3,27 +3,41 @@ import BusCodes from "../Const/BusCodes";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 import StopSearch from "./StopSearch";
+import API from "../Api/API";
+import Stop from "../Types/Stop";
 
 export default function RouteSearch() {
 
-    const [route, setRoute] = useState<string>();
+    const [stops, setStops] = useState<Stop[]>([]);
+    const [show, setShow] = useState<boolean>(false);
 
-    const handleOnChange = (event:any, values:any) => {
-        setRoute(values);
+    const handleOnChange = (event:Object, value: string) => {
+        setShow(false);
+        if (BusCodes.includes(value)) {
+            API.getStopsForBusCode(value).then(res => {
+                setStops(res);
+                setShow(true);
+            });
+
+        } else {
+            setStops([]);
+        }
+
     }
 
     const renderStopSearch = () => (
-        route ? <StopSearch busCode={route}/> : null
+        show ? <StopSearch stops={stops}/> : null
     )
 
     return (
         <>
             <Autocomplete
+                freeSolo
                 id="route-search-input"
                 disableClearable
                 options={BusCodes}
                 style={{width: 300}}
-                onChange={handleOnChange}
+                onInputChange={handleOnChange}
                 renderInput={(params) => (
                     <TextField
                         {...params}

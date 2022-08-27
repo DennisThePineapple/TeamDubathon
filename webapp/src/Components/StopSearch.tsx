@@ -5,20 +5,19 @@ import Stop from "../Types/Stop";
 import API from "../Api/API";
 
 type stopSearchProps = {
-    busCode: string
+    stops: Stop[]
 }
 
 export default function StopSearch(props: stopSearchProps) {
-    const [stops, setStops] = useState<Stop[]>([]);
+    // const [stops, setStops] = useState<Stop[]>([]);
 
-    useEffect(() => {
-        API.getStopsForBusCode(props.busCode).then(res => setStops(res));
-    }, [])
+    useEffect(() => {},
+        [props.stops])
     return (
         <Autocomplete
             id="stop-search-input"
             disableClearable
-            options={stops.map(stop => stop.stop_name)}
+            options={props.stops.map(stop => stop.stop_name)}
             style={{width: 300}}
             onChange={(event, newValue) => {
                 console.log(newValue);
