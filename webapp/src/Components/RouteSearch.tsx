@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import BusCodes from "../Const/BusCodes";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
@@ -13,22 +13,31 @@ export default function RouteSearch() {
     const [stops, setStops] = useState<Stop[]>([]);
     const [show, setShow] = useState<boolean>(false);
     const [loaded, setLoad] = useState<boolean>(false);
+    const [route, setRoute] = useState<string>("");
+    const [latestRoute, setLatestRoute] = useState<string>("");
 
     const handleOnChange = (event:Object, value: string) => {
-        setLoad(true);
+        setLatestRoute(value);
+        setLoad(false);
         setShow(false);
         if (BusCodes.includes(value)) {
+            setLoad(true);
             API.getStopsForBusCode(value).then(res => {
                 setStops(res);
-                setLoad(false);
-                setShow(true);
+                setRoute(value);
             });
 
         } else {
             setStops([]);
         }
-
     }
+
+    useEffect(() => {
+        if (latestRoute == route && route != "") {
+            setLoad(false);
+            setShow(true);
+        }
+    }, [route])
 
     const renderStopSearch = () => (
         show ? <StopSearch stops={stops}/> : null
