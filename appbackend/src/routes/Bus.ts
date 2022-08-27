@@ -1,11 +1,12 @@
 import { Request, Response, Router } from 'express';
+import {getStopsForBus} from "@services/DatabaseService";
 
 
 const router = Router();
 
 
-router.get('',  (req: Request, res: Response) => {
-    return res.end();
+router.get('/stops/:bus',(req: Request, res: Response) => {
+    getStopsForBus(req.params.bus).then(busStops => res.send(busStops));
 });
 
 export default router;
