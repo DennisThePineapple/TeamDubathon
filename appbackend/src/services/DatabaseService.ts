@@ -1,4 +1,4 @@
-import {routes, PrismaClient} from '@prisma/client'
+import {PrismaClient, routes, stops} from '@prisma/client'
 
 const prisma = new PrismaClient();
 
@@ -49,15 +49,28 @@ export async function getStopsForBus(bus: string) {
         }
     )
 
+    const sortedStopTimes = stopTimes.sort(
+        (a,b) =>
+            (a.arrival_time && b.arrival_time) ? (a.arrival_time-b.arrival_time) : 0
+    ).map(stopTime => stopTime.stop_id);
+
+
     const stops = await prisma.stops.findMany({
         where: {
             stop_id: {
                 in: stopTimes.map(stopTime => stopTime.stop_id)
             }
         }
+    });
+    const sortedStops: stops[] = [];
+    sortedStopTimes.forEach(id => {
+        const stop = stops.find(stop => stop.stop_id == id);
+        if (stop) {
+            sortedStops.push(stop);
+        }
     })
 
-    return stops;
+    return sortedStops
 }
 
 export async function getAllBusCodes() {
