@@ -1,13 +1,11 @@
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, MetaData
 from config import DB_STRING, VEHICLE_POSITIONS_URL
-from models import Base, VehiclePosition
 import gtfs_realtime_pb2
 import urllib.request
 import datetime
-import calendar
-import math
+from tqdm import tqdm
 
 QUERY_1 = "SELECT stop_times.arrival_time FROM stop_times WHERE stop_times.stop_id = '{}' AND stop_times.trip_id = '{}'"
 
@@ -17,7 +15,6 @@ def getStoppedVehiclePosition():
     feed.ParseFromString(response.read())
     for entity in feed.entity:
         if entity.vehicle.current_status == 1:
-            print(entity)
             return entity.vehicle.stop_id,\
                 entity.vehicle.trip.trip_id,\
                 entity.vehicle.trip.route_id,\
@@ -29,21 +26,10 @@ def getExpectedArrivalTime(stopId, tripId, engine):
         for r in rs:
             return r[0]
 
-def secondsToEpoch(sec):
-    hours = math.floor((sec / 3600))
-    minutes = math.floor((sec % 3600) / 60)
-    seconds = math.floor(((sec % 3600) % 60))
-    dt = datetime.strptime("{}:{}:{}".format(hours,minutes,seconds), "%H:%M:%S")
-    dt_now = datetime.now()
-    dt = dt.replace(year=dt_now.year, month=dt_now.month, day=dt_now.day)
-    return calendar.timegm(dt.utctimetuple())
-
-# def insertRow(actualTime, expectedTime):
-#     delay = actualTime - expectedTime
-#     vehiclePosition = VehiclePosition(stop_id, trip_id, route_id, time, delay_time)
-#     s.add(vehiclePosition)
-#     s.commit()
-
+def extractHmsFromEpoch(epochTime):
+    hmsString = datetime.datetime.fromtimestamp(epochTime).strftime('%H:%M:%S')
+    h, m, s = hmsString.split(':')
+    return int(h) * 3600 + int(m) * 60 + int(s)
 
 if __name__ == "__main__":
     Base = automap_base()
@@ -51,15 +37,22 @@ if __name__ == "__main__":
     Base.prepare(autoload_with=engine)
 
     StopTimes = Base.classes.stop_times
+    VehiclePositions = Base.classes.vehicle_positions
     session = Session(engine)
 
-    stopId, tripId, routeId, actualArrival = getStoppedVehiclePosition()
-    expectedArrival = getExpectedArrivalTime(stopId, tripId, engine)   
-    print(actualArrival)
-    print(expectedArrival)
-    print(type(datetime.timedelta(seconds=expectedArrival)))
-    print()
+    stopIdPrev, tripIdPrev, routeIdPrev = None, None, None
 
-    # print(datetime.utcfromtimestamp(expectedArrival).strftime('%H:%M:%S'))
-    # print(datetime.utcfromtimestamp(actualArrival).strftime('%H:%M:%S'))
-    
+    count = 0
+    for _ in tqdm(range(100)):
+        stopId, tripId, routeId, actualArrival = getStoppedVehiclePosition()
+        delayTime = extractHmsFromEpoch(actualArrival) - getExpectedArrivalTime(stopId, tripId, engine)
+
+        if stopIdPrev == stopId and tripIdPrev == tripId and routeIdPrev == routeId:
+            continue
+        else:
+            count += 1
+            stopIdPrev, tripIdPrev, routeIdPrev = stopId, tripId, routeId
+
+            session.add(VehiclePositions(stop_id=stopId, trip_id=tripId, route_id=routeId, time=actualArrival, delay=delayTime))
+            session.commit()
+            print(count)
