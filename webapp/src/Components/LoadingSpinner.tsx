@@ -13,7 +13,14 @@ export default function LoadingSpinner(props : loadingSpinnerProps) {
     const [logo, setLogo] = useState();
 
     const changeLogo = () => {
-        setName(faces[Math.floor(Math.random() * faces.length)]);
+        let newName = "";
+
+        do {
+            newName = faces[Math.floor(Math.random() * faces.length)];
+        } while(newName == name);
+
+
+        setName(newName);
         setLogo(require('../Images/' + name + '.png'));
     }
 
