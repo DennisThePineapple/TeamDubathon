@@ -2,26 +2,12 @@ import {PrismaClient, routes, stops} from '@prisma/client'
 
 const prisma = new PrismaClient();
 
-export async function getRoute(id: string) {
-    const route = await prisma.routes.findFirst({
+export async function getRouteFromBus(id: string) {
+    return  await prisma.routes.findFirst({
         where: {
-            route_id: id
-        }
-    });
-}
-
-export async function getStop(id: string) {
-    const stop = await prisma.stops.findFirst({
-        where: {
-            stop_id: id
-        }
-    });
-}
-
-export async function getTrip(id: string) {
-    const trip = await prisma.trips.findFirst({
-        where: {
-            trip_id: id
+            route_id: {
+                startsWith: id
+            }
         }
     });
 }
@@ -80,4 +66,21 @@ export async function getAllBusCodes() {
         route_id = route_id.substring(0, route_id.indexOf('-'));
         return route_id;
     })
+}
+
+export async function getRouteData(routeId: string) {
+    return await prisma.vehicle_positions.findMany({
+        where: {
+            route_id: routeId
+        }
+    });
+}
+
+export async function getRouteStopData(routeId: string, stopId: string) {
+    return await prisma.vehicle_positions.findMany({
+        where: {
+            route_id: routeId,
+            stop_id: stopId
+        }
+    });
 }

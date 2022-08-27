@@ -240,3 +240,12 @@ model zones {
 
   @@id([feed_id, zone_id])
 }
+
+model vehicle_positions {
+  stop_id  String @db.VarChar
+  trip_id  String @db.VarChar
+  route_id String @db.VarChar
+  time     Int
+  delay    Int?
+  @@id([stop_id, trip_id, route_id, time])
+}

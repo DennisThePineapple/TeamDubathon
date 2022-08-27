@@ -14,7 +14,7 @@ export default function LoadingSpinner(props : loadingSpinnerProps) {
     const changeLogo = () => {
         let index = Math.floor(Math.random() * faces.length);
 
-        if (faces[index] == name) {
+        if (faces[index] === name) {
             index = (index + 1) % faces.length;
         }
 
