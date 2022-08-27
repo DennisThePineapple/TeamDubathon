@@ -27,6 +27,7 @@ export default function StopSearch(props: stopSearchProps) {
     return (
         <Search id={"stop-search"} label={"Bus Stop"}
                 error={error} errorText={"Non-existent bus stop"}
+                loading={false}
                 options={stopsToString()} onInputChangeHandler={handleOnChange} />
     );
 }
