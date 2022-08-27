@@ -48,7 +48,7 @@ export default function RouteSearch() {
 
     return (
         <>
-            <Search options={BusCodes} onInputChangeHandler={handleOnChange} />
+            <Search id={"route-search"} label={"Bus Route"} options={BusCodes} onInputChangeHandler={handleOnChange} />
             {renderLoadingSpinner()}
             {renderStopSearch()}
         </>

@@ -11,6 +11,6 @@ export default function StopSearch(props: stopSearchProps) {
     useEffect(() => {},
         [props.stops])
     return (
-        <Search options={props.stops.map(stop => stop.stop_name)} onInputChangeHandler={() => {}} />
+        <Search id={"stop-search"} label={"Bus Stop"} options={props.stops.map(stop => stop.stop_name)} onInputChangeHandler={() => {}} />
     );
 }

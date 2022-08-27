@@ -3,6 +3,8 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 type searchProps = {
+    id: string,
+    label: string,
     options: string[],
     onInputChangeHandler: (event: object, value: string) => void;
 }
@@ -12,7 +14,7 @@ export default function Search(props : searchProps) {
     return(
         <Autocomplete
             freeSolo
-            id="route-search-input"
+            id={props.id}
             disableClearable
             options={props.options}
             style={{width: 300}}
@@ -20,7 +22,7 @@ export default function Search(props : searchProps) {
             renderInput={(params) => (
                 <TextField
                     {...params}
-                    label="Bus Route"
+                    label={props.label}
                     margin="normal"
                     variant="outlined"
                     size="medium"
