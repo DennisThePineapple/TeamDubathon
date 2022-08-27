@@ -9,19 +9,18 @@ type loadingSpinnerProps = {
 
 export default function LoadingSpinner(props : loadingSpinnerProps) {
 
-    const [name, setName] = useState<string>("dennis");
+    const [name, setName] = useState<string>("");
     const [logo, setLogo] = useState();
 
     const changeLogo = () => {
-        let newName = "";
+        let index = Math.floor(Math.random() * faces.length);
 
-        do {
-            newName = faces[Math.floor(Math.random() * faces.length)];
-        } while(newName == name);
+        if (faces[index] == name) {
+            index = (index + 1) % faces.length;
+        }
 
-
-        setName(newName);
-        setLogo(require('../Images/' + name + '.png'));
+        setName(faces[index]);
+        setLogo(require('../Images/' + faces[index] + '.png'));
     }
 
     useEffect(() => {
