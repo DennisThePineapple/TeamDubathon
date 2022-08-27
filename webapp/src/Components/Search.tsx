@@ -4,7 +4,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 
 type searchProps = {
     options: string[],
-    onInputChangeHandler: any
+    onInputChangeHandler: (event: object, value: string) => void;
 }
 
 export default function Search(props : searchProps) {
