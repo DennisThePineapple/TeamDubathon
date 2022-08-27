@@ -7,8 +7,6 @@ import 'express-async-errors';
 
 import BaseRouter from './routes';
 import logger from 'jet-logger';
-import {getAllBusCodes} from "@services/DatabaseService";
-import {writeFile} from "fs";
 
 const app = express();
 const { BAD_REQUEST } = StatusCodes;

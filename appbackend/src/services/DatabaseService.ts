@@ -34,6 +34,30 @@ export async function getStopsForBus(bus: string) {
             }
         }
     })
+
+    const trip = await prisma.trips.findFirst({
+        where: {
+            route_id: route?.route_id
+        }
+    })
+
+    const stopTimes = await prisma.stop_times.findMany(
+        {
+            where: {
+                trip_id: trip?.trip_id
+            }
+        }
+    )
+
+    const stops = await prisma.stops.findMany({
+        where: {
+            stop_id: {
+                in: stopTimes.map(stopTime => stopTime.stop_id)
+            }
+        }
+    })
+
+    return stops;
 }
 
 export async function getAllBusCodes() {
