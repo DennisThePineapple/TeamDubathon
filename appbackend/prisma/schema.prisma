@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,53 +7,236 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Route {
-  id                        String      @db.VarChar(255) @id
-  route_short_name          String      @db.VarChar(255)
-  route_desc                String      @db.VarChar(255)
-  route_long_name           String      @db.VarChar(255)
-  route_type                String      @db.VarChar(255)
-  route_url                 String      @db.VarChar(255)
-  createdAt DateTime    @default(now()) @db.Timestamp(6)
-  trips                     Trip[]
+model agency {
+  feed_id         String    @db.VarChar
+  agency_id       String    @db.VarChar
+  agency_name     String    @db.VarChar
+  agency_url      String    @db.VarChar
+  agency_timezone String    @db.VarChar
+  agency_lang     String?   @db.VarChar
+  agency_phone    String?   @db.VarChar
+  agency_fare_url String?   @db.VarChar
+  agency_email    String?   @db.VarChar
+  feed_info       feed_info @relation(fields: [feed_id], references: [feed_id], onDelete: NoAction, onUpdate: NoAction)
+  routes          routes[]
+
+  @@id([feed_id, agency_id])
 }
 
-model Stop {
-    id                             String      @db.VarChar(255) @id
-    stop_code                  String      @db.VarChar(255)
-    stop_name                  String      @db.VarChar(255)
-    stop_desc               String      @db.VarChar(255)
-    stop_lat                String      @db.VarChar(255)
-    stop_lon                 String      @db.VarChar(255)
-    zone_id                 String      @db.VarChar(255)
-    stop_url                String      @db.VarChar(255)
-    location_type           String      @db.VarChar(255)
-    parent_station                String      @db.VarChar(255)
-    platform_code                 String      @db.VarChar(255)
-    stoptimes           StopTime[]
+model calendar {
+  feed_id        String           @db.VarChar
+  service_id     String           @db.VarChar
+  feed_info      feed_info        @relation(fields: [feed_id], references: [feed_id], onDelete: NoAction, onUpdate: NoAction)
+  calendar_dates calendar_dates[]
+  trips          trips[]
+
+  @@id([feed_id, service_id])
 }
 
-model Trip {
-    id                             String      @db.VarChar(255) @id
-    service_id                  String      @db.VarChar(255)
-    trip_headsign                  String      @db.VarChar(255)
-    direction_id               String      @db.VarChar(255)
-    route   Route@relation(fields: [route_id], references: [id])
-    route_id                String      @db.VarChar(255)
-    stop_times          StopTime[]
+model calendar_dates {
+  feed_id    String    @db.VarChar
+  service_id String    @db.VarChar
+  date       DateTime  @db.Date
+  feed_info  feed_info @relation(fields: [feed_id], references: [feed_id], onDelete: NoAction, onUpdate: NoAction)
+  calendar   calendar  @relation(fields: [feed_id, service_id], references: [feed_id, service_id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([feed_id, service_id, date])
+  @@index([feed_id, date], map: "idx_calendar_dates_date")
 }
 
-model StopTime {
-    id          Int  @id @default(autoincrement())
-        arrival_time                  String      @db.VarChar(255)
-        departure_time                  String      @db.VarChar(255)
-        direction_id               String      @db.VarChar(255)
-                stop_sequence                  String      @db.VarChar(255)
-                pickup_type                  String      @db.VarChar(255)
-                drop_off_type               String      @db.VarChar(255)
+model fare_attributes {
+  feed_id           String       @db.VarChar
+  fare_id           String       @db.VarChar
+  price             Float
+  currency_type     String       @db.VarChar
+  payment_method    Int
+  transfers         Int?
+  transfer_duration Int?
+  feed_info         feed_info    @relation(fields: [feed_id], references: [feed_id], onDelete: NoAction, onUpdate: NoAction)
+  fare_rules        fare_rules[]
 
-        stop   Stop@relation(fields: [stop_id], references: [id])
-        stop_id                String      @db.VarChar(255)
-               trip   Trip@relation(fields: [trip_id], references: [id])
-               trip_id                String      @db.VarChar(255)
+  @@id([feed_id, fare_id])
+}
+
+model fare_rules {
+  feed_id         String?          @db.VarChar
+  fare_id         String?          @db.VarChar
+  fare_rule_id    Int              @id @default(autoincrement())
+  route_id        String?          @db.VarChar
+  origin_id       String?          @db.VarChar
+  destination_id  String?          @db.VarChar
+  contains_id     String?          @db.VarChar
+  fare_attributes fare_attributes? @relation(fields: [feed_id, fare_id], references: [feed_id, fare_id], onDelete: NoAction, onUpdate: NoAction)
+  feed_info       feed_info?       @relation(fields: [feed_id], references: [feed_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model feed_info {
+  feed_id             String            @id @db.VarChar
+  feed_publisher_name String?           @db.VarChar
+  feed_publisher_url  String?           @db.VarChar
+  feed_contact_email  String?           @db.VarChar
+  feed_contact_url    String?           @db.VarChar
+  feed_lang           String?           @db.VarChar
+  feed_start_date     DateTime?         @db.Date
+  feed_end_date       DateTime?         @db.Date
+  feed_version        String?           @db.VarChar
+  agency              agency[]
+  calendar            calendar[]
+  calendar_dates      calendar_dates[]
+  fare_attributes     fare_attributes[]
+  fare_rules          fare_rules[]
+  routes              routes[]
+  shape_pts           shape_pts[]
+  shapes              shapes[]
+  stop_times          stop_times[]
+  stops               stops[]
+  transfers           transfers[]
+  trips               trips[]
+  zones               zones[]
+}
+
+model routes {
+  feed_id          String    @db.VarChar
+  route_id         String    @db.VarChar
+  agency_id        String    @db.VarChar
+  route_short_name String?   @db.VarChar
+  route_long_name  String?   @db.VarChar
+  route_desc       String?   @db.VarChar
+  route_type       Int
+  route_url        String?   @db.VarChar
+  route_color      String?   @db.VarChar
+  route_text_color String?   @db.VarChar
+  agency           agency    @relation(fields: [feed_id, agency_id], references: [feed_id, agency_id], onDelete: NoAction, onUpdate: NoAction)
+  feed_info        feed_info @relation(fields: [feed_id], references: [feed_id], onDelete: NoAction, onUpdate: NoAction)
+  trips            trips[]
+
+  @@id([feed_id, route_id])
+  @@index([feed_id, agency_id], map: "idx_routes_agency")
+  @@index([feed_id, route_short_name], map: "idx_routes_short_name")
+  @@index([feed_id, route_type], map: "idx_routes_type")
+}
+
+model shape_pts {
+  feed_id             String    @db.VarChar
+  shape_id            String    @db.VarChar
+  shape_pt_sequence   Int
+  shape_dist_traveled Float
+  shape_pt_lat        Float
+  shape_pt_lon        Float
+  feed_info           feed_info @relation(fields: [feed_id], references: [feed_id], onDelete: NoAction, onUpdate: NoAction)
+  shapes              shapes    @relation(fields: [feed_id, shape_id], references: [feed_id, shape_id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([feed_id, shape_id, shape_pt_sequence])
+  @@index([feed_id, shape_id], map: "idx_shape_pt_shape")
+}
+
+model shapes {
+  feed_id   String      @db.VarChar
+  shape_id  String      @db.VarChar
+  feed_info feed_info   @relation(fields: [feed_id], references: [feed_id], onDelete: NoAction, onUpdate: NoAction)
+  shape_pts shape_pts[]
+  trips     trips[]
+
+  @@id([feed_id, shape_id])
+}
+
+model stop_times {
+  feed_id             String    @db.VarChar
+  trip_id             String    @db.VarChar
+  stop_sequence       Int
+  stop_id             String    @db.VarChar
+  arrival_time        Int?
+  departure_time      Int?
+  interpolated        Boolean
+  shape_dist_traveled Float
+  timepoint           Int
+  pickup_type         Int
+  drop_off_type       Int
+  stop_headsign       String?   @db.VarChar
+  feed_info           feed_info @relation(fields: [feed_id], references: [feed_id], onDelete: NoAction, onUpdate: NoAction)
+  stops               stops     @relation(fields: [feed_id, stop_id], references: [feed_id, stop_id], onDelete: NoAction, onUpdate: NoAction)
+  trips               trips     @relation(fields: [feed_id, trip_id], references: [feed_id, trip_id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([feed_id, trip_id, stop_sequence])
+  @@index([feed_id, stop_sequence], map: "idx_stop_times_sequence")
+  @@index([feed_id, stop_id], map: "idx_stop_times_stop")
+}
+
+model stops {
+  feed_id                                         String       @db.VarChar
+  stop_id                                         String       @db.VarChar
+  parent_station_id                               String?      @db.VarChar
+  location_type                                   Int
+  stop_name                                       String       @db.VarChar
+  stop_lat                                        Float
+  stop_lon                                        Float
+  wheelchair_boarding                             Int
+  stop_code                                       String?      @db.VarChar
+  stop_desc                                       String?      @db.VarChar
+  zone_id                                         String?      @db.VarChar
+  stop_url                                        String?      @db.VarChar
+  stop_timezone                                   String?      @db.VarChar
+  feed_info                                       feed_info    @relation(fields: [feed_id], references: [feed_id], onDelete: NoAction, onUpdate: NoAction)
+  stops                                           stops?       @relation("stopsTostops", fields: [feed_id, parent_station_id], references: [feed_id, stop_id], onDelete: NoAction, onUpdate: NoAction)
+  zones                                           zones?       @relation(fields: [feed_id, zone_id], references: [feed_id, zone_id], onDelete: NoAction, onUpdate: NoAction)
+  stop_times                                      stop_times[]
+  other_stops                                     stops[]      @relation("stopsTostops")
+  transfers_stopsTotransfers_feed_id_from_stop_id transfers[]  @relation("stopsTotransfers_feed_id_from_stop_id")
+  transfers_stopsTotransfers_feed_id_to_stop_id   transfers[]  @relation("stopsTotransfers_feed_id_to_stop_id")
+
+  @@id([feed_id, stop_id])
+  @@index([feed_id, stop_code], map: "idx_stops_code")
+  @@index([stop_lat], map: "idx_stops_lat")
+  @@index([stop_lon], map: "idx_stops_lon")
+  @@index([feed_id, parent_station_id], map: "idx_stops_parent")
+  @@index([feed_id, zone_id], map: "idx_stops_zone")
+}
+
+model transfers {
+  feed_id                                     String    @db.VarChar
+  from_stop_id                                String    @db.VarChar
+  to_stop_id                                  String    @db.VarChar
+  transfer_type                               Int
+  min_transfer_time                           Int?
+  feed_info                                   feed_info @relation(fields: [feed_id], references: [feed_id], onDelete: NoAction, onUpdate: NoAction)
+  stops_stopsTotransfers_feed_id_from_stop_id stops     @relation("stopsTotransfers_feed_id_from_stop_id", fields: [feed_id, from_stop_id], references: [feed_id, stop_id], onDelete: NoAction, onUpdate: NoAction)
+  stops_stopsTotransfers_feed_id_to_stop_id   stops     @relation("stopsTotransfers_feed_id_to_stop_id", fields: [feed_id, to_stop_id], references: [feed_id, stop_id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([feed_id, from_stop_id, to_stop_id])
+  @@index([feed_id, from_stop_id], map: "idx_transfer_from")
+  @@index([feed_id, to_stop_id], map: "idx_transfer_to")
+}
+
+model trips {
+  feed_id               String       @db.VarChar
+  trip_id               String       @db.VarChar
+  route_id              String       @db.VarChar
+  service_id            String       @db.VarChar
+  shape_id              String?      @db.VarChar
+  wheelchair_accessible Int
+  bikes_allowed         Int
+  exact_times           Int
+  frequency_generated   Boolean
+  trip_headsign         String?      @db.VarChar
+  trip_short_name       String?      @db.VarChar
+  direction_id          Int?
+  block_id              String?      @db.VarChar
+  feed_info             feed_info    @relation(fields: [feed_id], references: [feed_id], onDelete: NoAction, onUpdate: NoAction)
+  routes                routes       @relation(fields: [feed_id, route_id], references: [feed_id, route_id], onDelete: NoAction, onUpdate: NoAction)
+  calendar              calendar     @relation(fields: [feed_id, service_id], references: [feed_id, service_id], onDelete: NoAction, onUpdate: NoAction)
+  shapes                shapes?      @relation(fields: [feed_id, shape_id], references: [feed_id, shape_id], onDelete: NoAction, onUpdate: NoAction)
+  stop_times            stop_times[]
+
+  @@id([feed_id, trip_id])
+  @@index([feed_id, route_id], map: "idx_trips_route")
+  @@index([feed_id, service_id], map: "idx_trips_service")
+}
+
+model zones {
+  feed_id   String    @db.VarChar
+  zone_id   String    @db.VarChar
+  feed_info feed_info @relation(fields: [feed_id], references: [feed_id], onDelete: NoAction, onUpdate: NoAction)
+  stops     stops[]
+
+  @@id([feed_id, zone_id])
 }

@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import userRouter from './user-router';
-
+import BusRouter from './Bus'
+import StatsRouter from './RouteStatistics'
 
 // Export the base-router
 const baseRouter = Router();
 
 // Setup routers
-baseRouter.use('/users', userRouter);
-
+baseRouter.use('/bus', BusRouter);
+baseRouter.use('/stats', StatsRouter);
 // Export default.
 export default baseRouter;
