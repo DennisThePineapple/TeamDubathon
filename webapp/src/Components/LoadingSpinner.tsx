@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import '../App.css';
 import faces from "../Const/Faces";
-import Stop from "../Types/Stop";
 
 type loadingSpinnerProps = {
     isAppLogo : boolean

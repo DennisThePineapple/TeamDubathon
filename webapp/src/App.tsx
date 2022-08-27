@@ -1,14 +1,14 @@
 import React from 'react';
-
 import './App.css';
-import Search from "./Components/Search";
 import LoadingSpinner from "./Components/LoadingSpinner";
+import RouteSearch from "./Components/RouteSearch";
+
 function App() {
     return (
         <div className="App">
             <body className="App-header">
                 <LoadingSpinner isAppLogo={true}/>
-                <Search />
+                <RouteSearch />
             </body>
         </div>
     );

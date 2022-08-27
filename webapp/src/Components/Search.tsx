@@ -1,13 +1,35 @@
-import RouteSearch from "./RouteSearch";
 import React from "react";
+import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
+type searchProps = {
+    options: string[],
+    onInputChangeHandler: any
+}
 
-export default function Search() {
+export default function Search(props : searchProps) {
 
     return(
-        <div>
-            <RouteSearch/>
-
-        </div>
+        <Autocomplete
+            freeSolo
+            id="route-search-input"
+            disableClearable
+            options={props.options}
+            style={{width: 300}}
+            onInputChange={props.onInputChangeHandler}
+            renderInput={(params) => (
+                <TextField
+                    {...params}
+                    label="Bus Route"
+                    margin="normal"
+                    variant="outlined"
+                    size="medium"
+                    InputProps={{
+                        ...params.InputProps,
+                        type: 'search',
+                    }}
+                />
+            )}
+        />
     )
 }

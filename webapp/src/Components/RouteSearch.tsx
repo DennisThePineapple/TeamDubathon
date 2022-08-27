@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from "react";
 import BusCodes from "../Const/BusCodes";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import TextField from "@material-ui/core/TextField";
 import StopSearch from "./StopSearch";
 import API from "../Api/API";
 import Stop from "../Types/Stop";
 import LoadingSpinner from "./LoadingSpinner";
+import Search from "./Search";
 
 
 export default function RouteSearch() {
@@ -49,27 +48,7 @@ export default function RouteSearch() {
 
     return (
         <>
-            <Autocomplete
-                freeSolo
-                id="route-search-input"
-                disableClearable
-                options={BusCodes}
-                style={{width: 300}}
-                onInputChange={handleOnChange}
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        label="Bus Route"
-                        margin="normal"
-                        variant="outlined"
-                        size="medium"
-                        InputProps={{
-                            ...params.InputProps,
-                            type: 'search',
-                        }}
-                    />
-                )}
-            />
+            <Search options={BusCodes} onInputChangeHandler={handleOnChange} />
             {renderLoadingSpinner()}
             {renderStopSearch()}
         </>
