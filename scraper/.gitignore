@@ -1,3 +1,4 @@
 *.zip
 *.txt
 *.sqlite
+__pycache__
