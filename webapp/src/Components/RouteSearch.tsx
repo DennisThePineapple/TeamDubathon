@@ -35,7 +35,7 @@ export default function RouteSearch() {
     )
 
     const renderLoadingSpinner = () => (
-        loaded ? <LoadingSpinner/> : null
+        loaded ? <LoadingSpinner isAppLogo={false}/> : null
     )
 
     return (
