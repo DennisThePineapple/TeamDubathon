@@ -5,6 +5,8 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 type searchProps = {
     id: string,
     label: string,
+    error: boolean,
+    errorText: string,
     options: string[],
     onInputChangeHandler: (event: object, value: string) => void;
 }
@@ -26,6 +28,8 @@ export default function Search(props : searchProps) {
                     margin="normal"
                     variant="outlined"
                     size="medium"
+                    error={props.error}
+                    helperText={props.error ? props.errorText : ""}
                     InputProps={{
                         ...params.InputProps,
                         type: 'search',

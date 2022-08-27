@@ -14,11 +14,13 @@ export default function RouteSearch() {
     const [loaded, setLoad] = useState<boolean>(false);
     const [route, setRoute] = useState<string>("");
     const [latestRoute, setLatestRoute] = useState<string>("");
+    const [error, setError] = useState<boolean>(false);
 
     const handleOnChange = (event:Object, value: string) => {
         setLatestRoute(value);
         setLoad(false);
         setShow(false);
+        setError(false);
         if (BusCodes.includes(value)) {
             setLoad(true);
             API.getStopsForBusCode(value).then(res => {
@@ -28,6 +30,10 @@ export default function RouteSearch() {
 
         } else {
             setStops([]);
+
+            if (value != "") {
+                setError(true);
+            }
         }
     }
 
@@ -48,7 +54,9 @@ export default function RouteSearch() {
 
     return (
         <>
-            <Search id={"route-search"} label={"Bus Route"} options={BusCodes} onInputChangeHandler={handleOnChange} />
+            <Search id={"route-search"} label={"Bus Route"}
+                    error={error} errorText={"Non-existent bus route"}
+                    options={BusCodes} onInputChangeHandler={handleOnChange} />
             {renderLoadingSpinner()}
             {renderStopSearch()}
         </>
