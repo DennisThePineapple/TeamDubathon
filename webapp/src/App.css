@@ -10,6 +10,12 @@
 .Spinner-logo {
   height: 10vmin;
   pointer-events: none;
+  position:absolute;
+}
+
+.search {
+  display: flex;
+  flex-direction: row;
 }
 
 @media (prefers-reduced-motion: no-preference) {

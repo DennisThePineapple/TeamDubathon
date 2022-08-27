@@ -11,7 +11,7 @@ export default function RouteSearch() {
 
     const [stops, setStops] = useState<Stop[]>([]);
     const [show, setShow] = useState<boolean>(false);
-    const [loaded, setLoad] = useState<boolean>(false);
+    const [loading, setLoad] = useState<boolean>(false);
     const [route, setRoute] = useState<string>("");
     const [latestRoute, setLatestRoute] = useState<string>("");
     const [error, setError] = useState<boolean>(false);
@@ -29,8 +29,6 @@ export default function RouteSearch() {
             });
 
         } else {
-            setStops([]);
-
             if (value != "") {
                 setError(true);
             }
@@ -42,22 +40,18 @@ export default function RouteSearch() {
             setLoad(false);
             setShow(true);
         }
-    }, [route])
+    }, [route, latestRoute])
 
     const renderStopSearch = () => (
         show ? <StopSearch stops={stops}/> : null
-    )
-
-    const renderLoadingSpinner = () => (
-        loaded ? <LoadingSpinner isAppLogo={false}/> : null
     )
 
     return (
         <>
             <Search id={"route-search"} label={"Bus Route"}
                     error={error} errorText={"Non-existent bus route"}
+                    loading={loading}
                     options={BusCodes} onInputChangeHandler={handleOnChange} />
-            {renderLoadingSpinner()}
             {renderStopSearch()}
         </>
 
