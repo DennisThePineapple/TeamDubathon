@@ -21,12 +21,9 @@ export default function RouteSearch() {
         setLoad(false);
         setShow(false);
         setError(false);
-        console.log("outside:" + value)
         if (BusCodes.includes(value)) {
-            console.log("inside" + value)
             setLoad(true);
             API.getStopsForBusCode(value).then(res => {
-                console.log("inside 2" + value)
                 setStops(res);
                 setRoute(value);
             });
