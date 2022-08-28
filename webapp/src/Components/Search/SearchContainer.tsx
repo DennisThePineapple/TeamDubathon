@@ -16,7 +16,7 @@ type searchContainerProps = {
 export default function SearchContainer(props: searchContainerProps) {
 
     const renderStopSearch = () => {
-        if (props.stops) {
+        if (props.stops && props.stops.length > 0) {
             return (
                 <StopSearch
                     stops={props.stops}

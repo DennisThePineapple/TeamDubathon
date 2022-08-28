@@ -39,6 +39,8 @@ export default function RouteSearch(props: routeSearchProps) {
     useEffect(() => {
         if (latestRoute == busCode && busCode != "") {
             setLoad(false);
+        } else if (latestRoute != busCode) {
+            props.setStops([]);
         }
     }, [busCode, latestRoute])
 
