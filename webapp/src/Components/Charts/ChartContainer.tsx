@@ -27,7 +27,7 @@ export default function ChartContainer(props: chartContainerProps) {
         API.getVehiclePositionsForRoute(props.route.route_id).then(res => {
                 setAllVehiclePositions(res)
         })
-    }, [])
+    }, [props.selectedStop])
 
     const getAvg = (arr: number[]): number => {
         let sum = 0;
