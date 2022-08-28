@@ -16,7 +16,7 @@ export default function AppContainer() {
     }
 
     const renderCharts = () => {
-        if (route != null && stops != null && selectedStop != null && showCharts) {
+        if (route != null && stops != null && stops.length > 0 && selectedStop != null) {
             console.log("Creating Charts!")
             return (
                 <ChartContainer stops={stops} route={route} selectedStop={selectedStop}/>
@@ -33,13 +33,6 @@ export default function AppContainer() {
                 setRoute={setRoute}
                 selectedStop={selectedStop}
                 setSelectedStop={setSelectedStop}/>
-            <Button
-                variant="contained"
-                disabled={shouldAllowGenerateButton()}
-                onClick={() => setShowCharts(true)}
-            >
-                Generate Charts
-            </Button>
             {renderCharts()}
 
         </div>

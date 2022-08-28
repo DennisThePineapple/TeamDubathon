@@ -29,7 +29,7 @@ export default function ChartContainer(props: chartContainerProps) {
                 )
             }
         )
-    }, [])
+    }, [props.selectedStop])
 
     const getAvg = (arr: number[]): number => {
         let sum = 0;
