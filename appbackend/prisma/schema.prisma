@@ -247,5 +247,6 @@ model vehicle_positions {
   route_id String @db.VarChar
   time     Int
   delay    Int?
-  @@id([stop_id, trip_id, route_id, time])
+
+  @@id([stop_id, trip_id, route_id, time], map: "vehicle_positions_pk")
 }

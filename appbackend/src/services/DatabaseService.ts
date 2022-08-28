@@ -84,3 +84,17 @@ export async function getRouteStopData(routeId: string, stopId: string) {
         }
     });
 }
+
+export async function getRouteStopTimeData(tripIds: string[], stopId: string) {
+    return await prisma.stop_times.findMany({
+        where: {
+            trip_id: {in: tripIds},
+            stop_id: stopId
+        },
+        select: {
+            trip_id: true,
+            stop_id: true,
+            arrival_time: true
+        }
+    })
+}
