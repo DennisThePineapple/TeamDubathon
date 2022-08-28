@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import SearchContainer from "./Search/SearchContainer";
-import ChartContainer from "./ChartContainer";
+import ChartContainer from "./Charts/ChartContainer";
 import Route from "../Types/Route";
 import Stop from "../Types/Stop";
 import {Button} from "@material-ui/core";
@@ -41,6 +41,7 @@ export default function AppContainer() {
                 Generate Charts
             </Button>
             {renderCharts()}
+
         </div>
     )
 }

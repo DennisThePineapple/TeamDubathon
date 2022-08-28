@@ -80,3 +80,8 @@ h6 {
   text-align: center;
   color: darkblue;
 }
+
+.chart-container {
+  width: 100vw;
+  height: 40vh;
+}
