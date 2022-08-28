@@ -1,8 +1,6 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
-import Days from "../../Const/Days";
 import VehiclePosition from "../../Types/VehiclePosition";
-import vehiclePosition from "../../Types/VehiclePosition";
 
 
 
