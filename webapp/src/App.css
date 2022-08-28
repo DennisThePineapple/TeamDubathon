@@ -39,7 +39,6 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
 }
 
 .App-link {
@@ -87,5 +86,13 @@ h6 {
 }
 
 .chart {
-  width: 50vw;
+  width: 45vw;
+  margin-left: 3vw;
+  margin-bottom: 5vh;
+}
+
+.search-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
