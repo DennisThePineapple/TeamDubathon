@@ -5,6 +5,7 @@ import VehiclePosition from "../../Types/VehiclePosition";
 import API from "../../Api/API";
 import {WeekChart} from "./WeekChart";
 import {Typography} from "@material-ui/core";
+import {FakeWeekChart} from "./FakeWeekChart";
 
 type chartContainerProps = {
     stops: Stop[],
@@ -39,6 +40,25 @@ export default function ChartContainer(props: chartContainerProps) {
     }
 
     const renderCharts = () => {
+        if (props.route.route_id === "FAKEROUTE") {
+            return (
+                <div className = "chart-container">
+                    <div className = "chart">
+                        <Typography>
+                            Average Delay For this Stop: 120
+                        </Typography>
+                        <FakeWeekChart delay={126.64}/>
+                    </div>
+
+                    <div className = "chart">
+                        <Typography>
+                            Average Delay For this Route: 200
+                        </Typography>
+                        <FakeWeekChart delay={202.578}/>
+                    </div>
+                </div>
+            )
+        }
         if (vehiclePositions && allVehiclePositions) {
             return (
                 <div className = "chart-container">
