@@ -29,6 +29,16 @@ const getVehiclePositionsForRouteStop = async (routeId: string, stopId: string) 
     return response.data;
 }
 
+const getStopTimesForRouteStop = async (tripIds: string[], stopId: string) => {
+    const response = await axiosInstance.post<any[]>('/stats/route/stoptime', {
+        data: {
+            "tripIds": tripIds,
+            "stopId": stopId
+        }
+    });
+    return response.data;
+}
+
 const scaleDelay = (vehiclePositions: VehiclePosition[]): VehiclePosition[] => {
     return vehiclePositions.map(vehiclePosition => {
         if (vehiclePosition.delay > 80000) {
@@ -46,5 +56,6 @@ const API = {
     getRouteForBusCode: getRouteForBusCode,
     getVehiclePositionsForRoute: getVehiclePositionsForRoute,
     getVehiclePositionsForRouteStop: getVehiclePositionsForRouteStop,
+    getStopTimesForRouteStop: getStopTimesForRouteStop,
 };
 export default API;
