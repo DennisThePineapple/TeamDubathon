@@ -3,18 +3,12 @@ import Stop from "../Types/Stop";
 import Route from "../Types/Route";
 import VehiclePosition from "../Types/VehiclePosition";
 import API from "../Api/API";
-import vehiclePosition from "../Types/VehiclePosition";
+import StopTime from "../Types/StopTime";
 
 type chartContainerProps = {
     stops: Stop[],
     route: Route,
     selectedStop: Stop,
-}
-
-type StopTime = {
-    trip_id: string,
-    stop_id: string,
-    arrival_time: number
 }
 
 export default function ChartContainer(props: chartContainerProps) {
