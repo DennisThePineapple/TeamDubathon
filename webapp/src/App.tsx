@@ -8,6 +8,12 @@ function App() {
     return (
         <div className="App">
             <body className="App-header">
+                <h1>
+                    Bus Data Spinner
+                    <h6>
+                        check out data from the past week
+                    </h6>
+                </h1>
                 <LoadingSpinner isAppLogo={true}/>
                 <AppContainer/>
             </body>
