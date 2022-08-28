@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import SearchContainer from "./Search/SearchContainer";
 import ChartContainer from "./Charts/ChartContainer";
 import Route from "../Types/Route";

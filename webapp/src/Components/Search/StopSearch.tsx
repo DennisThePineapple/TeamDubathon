@@ -5,7 +5,7 @@ import Search from "./Search";
 type stopSearchProps = {
     stops: Stop[],
     selectedStop: Stop | null,
-    setSelectedStop: (stop: Stop) => void,
+    setSelectedStop: (stop: Stop | null) => void,
 }
 
 export default function StopSearch(props: stopSearchProps) {
@@ -16,6 +16,8 @@ export default function StopSearch(props: stopSearchProps) {
         setError(!(value === "" || findSelectedStop));
         if (findSelectedStop) {
             props.setSelectedStop(findSelectedStop);
+        } else {
+            props.setSelectedStop(null);
         }
     }
 
@@ -24,7 +26,9 @@ export default function StopSearch(props: stopSearchProps) {
     }
 
 
-    useEffect(() => {},
+    useEffect(() => {
+        props.setSelectedStop(null);
+    },
         [props.stops])
     return (
         <Search id={"stop-search"}

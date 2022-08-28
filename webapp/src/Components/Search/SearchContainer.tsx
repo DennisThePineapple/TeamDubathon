@@ -10,7 +10,7 @@ type searchContainerProps = {
     selectedStop: Stop | null,
     setStops: (stops: Stop[]) => void,
     setRoute: (route: Route) => void,
-    setSelectedStop: (stop: Stop) => void,
+    setSelectedStop: (stop: Stop | null) => void,
 }
 
 export default function SearchContainer(props: searchContainerProps) {
